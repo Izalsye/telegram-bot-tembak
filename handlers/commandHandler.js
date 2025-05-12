@@ -4,7 +4,8 @@ const Utils = require("../services/utils");
 const { User, OtpSession } = require("../models");
 const axios = require("axios");
 const crypto = require("crypto");
-
+const fs = require("fs");
+const path = require("path");
 const baseURL = config.API_CEK_DOMPUL;
 const logTime = () => chalk.gray(`[${new Date().toLocaleTimeString("id-ID")}]`);
 
@@ -397,6 +398,80 @@ async function handleCommand(ctx, msgService, userState) {
       },
       { text: "⬅️ Menu", callback_data: "menu" },
     ]);
+  } else if (userState.get(userId)?.step === "input_range") {
+    const input = ctx.message.text.trim();
+
+    // Validasi angka
+    const number = parseInt(input);
+    if (isNaN(number) || number <= 0) {
+      return msgService.sendButtonsv2(
+        ctx,
+        `❌ Masukkan nominal yang valid (angka lebih dari 0)`,
+        [{ text: "Kembali Ke Menu!", callback_data: "menu" }]
+      );
+    }
+
+    // Ubah config.js
+    const fs = require("fs");
+    const configPath = "./config.js";
+    try {
+      let configContent = fs.readFileSync(configPath, "utf8");
+
+      configContent = configContent.replace(
+        /RANGE_UP:\s*\d+/,
+        `RANGE_UP: ${number}`
+      );
+
+      fs.writeFileSync(configPath, configContent);
+      msgService.sendButtonsv2(
+        ctx,
+        `✅ RANGE UP Harga berhasil diubah menjadi ${number}, silakan synch product agar berubah`,
+        [{ text: "Kembali Ke Menu!", callback_data: "menu" }]
+      );
+    } catch (err) {
+      console.error(err);
+      msgService.sendButtonsv2(ctx, `❌ Gagal mengubah konfigurasi.`, [
+        { text: "Kembali Ke Menu!", callback_data: "menu" },
+      ]);
+    }
+
+  }  else if (userState.get(userId)?.step === "input_ranged") {
+    const input = ctx.message.text.trim();
+
+    // Validasi angka
+    const number = parseInt(input);
+    if (isNaN(number) || number <= 0) {
+      return msgService.sendButtonsv2(
+        ctx,
+        `❌ Masukkan nominal yang valid (angka lebih dari 0)`,
+        [{ text: "Kembali Ke Menu!", callback_data: "menu" }]
+      );
+    }
+
+    // Ubah config.js
+    const fs = require("fs");
+    const configPath = "./config.js";
+    try {
+      let configContent = fs.readFileSync(configPath, "utf8");
+
+      configContent = configContent.replace(
+        /RANGE_UP_V2:\s*\d+/,
+        `RANGE_UP_V2: ${number}`
+      );
+
+      fs.writeFileSync(configPath, configContent);
+      msgService.sendButtonsv2(
+        ctx,
+        `✅ RANGE UP Harga berhasil diubah menjadi ${number}, silakan synch product agar berubah`,
+        [{ text: "Kembali Ke Menu!", callback_data: "menu" }]
+      );
+    } catch (err) {
+      console.error(err);
+      msgService.sendButtonsv2(ctx, `❌ Gagal mengubah konfigurasi.`, [
+        { text: "Kembali Ke Menu!", callback_data: "menu" },
+      ]);
+    }
+
   } else if ("/menu") {
     msgService.sendPhotolocalWithButtons(
       ctx,
@@ -702,3 +777,10 @@ async function createTripayTransaction(userId, nominal) {
 }
 
 module.exports = handleCommand;
+let file = require.resolve(__filename);
+fs.watchFile(file, () => {
+  fs.unwatchFile(file);
+  console.log(chalk.redBright(`Update ${__filename}`));
+  delete require.cache[file];
+  require(file);
+});

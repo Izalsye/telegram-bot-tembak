@@ -2,7 +2,8 @@ const { Telegraf } = require("telegraf");
 const chalk = require("chalk");
 const ora = require("ora");
 const dayjs = require("dayjs");
-
+const fs = require("fs");
+const path = require("path");
 const { User, OtpSession } = require("./models");
 const config = require("./config");
 const syncProducts = require("./services/syncProductsFromDigiflazz");
@@ -85,3 +86,11 @@ async function addUserByInput(input, nama) {
 // Graceful shutdown
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));
+
+let file = require.resolve(__filename);
+fs.watchFile(file, () => {
+  fs.unwatchFile(file);
+  console.log(chalk.redBright(`Update ${__filename}`));
+  delete require.cache[file];
+  require(file);
+});

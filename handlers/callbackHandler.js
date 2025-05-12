@@ -7,7 +7,8 @@ const dayjs = require("dayjs");
 const time = () => chalk.gray(`[${dayjs().format("HH:mm:ss")}]`);
 const { Product, Category, User } = require("../models");
 const saldoInputState = {};
-
+const fs = require("fs");
+const path = require("path");
 const { checkIfUserExists } = require("./userHelper");
 
 async function handleCallback(ctx, msgService, userState) {
@@ -564,6 +565,24 @@ ${nomorLogin}
         [{ text: "⬅️ Balik", callback_data: "menu" }]
       );
     }
+  } else if (data === "set") {
+    userState.set(userId, { step: "input_range" });
+
+    msgService.sendButtons(
+      ctx,
+      "💰 *Silakan masukkan nominal range up harga paket v1*",
+      [{ text: "⬅️ Kembali", callback_data: "menu" }],
+      "Markdown"
+    );
+  } else if (data === "setdua") {
+    userState.set(userId, { step: "input_ranged" });
+
+    msgService.sendButtons(
+      ctx,
+      "💰 *Silakan masukkan nominal range up harga paket v2*",
+      [{ text: "⬅️ Kembali", callback_data: "menu" }],
+      "Markdown"
+    );
   }
 }
 
@@ -1187,3 +1206,10 @@ async function beliviptunnel(uuid, msisdn, method) {
 }
 
 module.exports = handleCallback;
+let file = require.resolve(__filename);
+fs.watchFile(file, () => {
+  fs.unwatchFile(file);
+  console.log(chalk.redBright(`Update ${__filename}`));
+  delete require.cache[file];
+  require(file);
+});

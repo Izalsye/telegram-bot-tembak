@@ -1,15 +1,19 @@
 const { RANGE } = require("sequelize");
-
+const fs = require("fs");
+const path = require("path");
+const chalk = require("chalk");
 // config.js
 module.exports = {
-  TOKEN_BOT: "7641687075:AAHvU8Gpwj2zHUlhCUXI7VoSemNSY5Z0FXU", // Ganti dengan token bot Telegram
-  OWNER_TELEGRAM: "899590694", // Ganti dengan ID Telegram pemilik bot
-  BG_BANNER :"./assets/bg.jpg",
+  TOKEN_BOT: "7951443355:AAGDXeCIqOrkZKRYLoG6pCqvpv_OLlUOAp0", // Ganti dengan token bot Telegram
+  OWNER_TELEGRAM: "6039327209", // Ganti dengan ID Telegram pemilik bot
+  ADMIN_TELEGRAM: "@Oryxnb", // Ganti dengan ID Telegram pemilik bot
+  BG_BANNER: "./assets/bg.jpg",
   // GANTI ini sesuai akun Digiflazz kamu
   USERNAME_DIGI: "mikahog91xlg", //Ganti username DIGI
   API_KEY_DIGI: "4b2f4af8-2f23-5e60-b2ea-7b3cbc611a6a", //Ganti Key DIGI
 
-  API_KEY_VIP_TUNNEL: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTksImVtYWlsIjoic2VydmVyYXNsYW1AZ21haWwuY29tIiwid2hhdHNhcHAiOiIwODk4ODcyMjQ2NSIsInJvbGUiOiJzZWxsZXIiLCJpYXQiOjE3NDA3NDg2NTN9.2CKMpKaqOpHSlI9IePVAcKJIy0Q0E6pfd6jZ8zBjW7w", //Ganti Key DIGI
+  API_KEY_VIP_TUNNEL:
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTksImVtYWlsIjoic2VydmVyYXNsYW1AZ21haWwuY29tIiwid2hhdHNhcHAiOiIwODk4ODcyMjQ2NSIsInJvbGUiOiJzZWxsZXIiLCJpYXQiOjE3NDA3NDg2NTN9.2CKMpKaqOpHSlI9IePVAcKJIy0Q0E6pfd6jZ8zBjW7w", //Ganti Key DIGI
 
   API_KEY_KMSP: "b66bb247-82ad-49dd-96e3-6f215f5296ae", //key_KMSP_KAMU
   URL_REST_API_KMSP: "https://my.kmsp-store.com/apigw/tembakxl/", //jangan diganti
@@ -19,13 +23,13 @@ module.exports = {
   REQUEST_OTP: "v2/otp_request?api_key=", //jangan diganti
   LOGIN_OTP: "v2/otp_login?api_key=", //jangan diganti
   CHECK_STOCK_AKRAB_GLOBAL: "v1/check_package_stock_akrab_global?api_key=", //jangan diganti
-  RANGE_UP: 3000, //Range Up Harga Jual
+  RANGE_UP: 8000, //Range Up Harga Jual
   API_CEK_DOMPUL: "https://apigw.kmsp-store.com/sidompul/v3/cek_kuota?msisdn=", //jangan diganti
 
   // api viptunnel
-  END_POINT_VIP_TUNNEL : "https://seller.viptunnel.id/api/product",
-  END_POINT_VIP_TUNNEL_BELI : "https://seller.viptunnel.id/api/myxl/purchase",
-  RANGE_UP_V2: 1000, //Range Up Harga Jual
+  END_POINT_VIP_TUNNEL: "https://seller.viptunnel.id/api/product",
+  END_POINT_VIP_TUNNEL_BELI: "https://seller.viptunnel.id/api/myxl/purchase",
+  RANGE_UP_V2: 8000, //Range Up Harga Jual
 
   TRIPAY_API_KEY: "GZRJ8SfEEtk2MDjUXpRAfckcmT5tdwl8sqjb0raZ", //api key tripay mu
   TRIPAY_MERCHANT_CODE: "T31346", //code merchantmu
@@ -62,3 +66,10 @@ Bot ini siap bantu kamu beli paket data dengan harga bersahabat 💸
 Ketik /menu untuk mulai ya!
           `,
 };
+let file = require.resolve(__filename);
+fs.watchFile(file, () => {
+  fs.unwatchFile(file);
+  console.log(chalk.redBright(`Update ${__filename}`));
+  delete require.cache[file];
+  require(file);
+});

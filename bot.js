@@ -3,6 +3,7 @@ const chalk = require("chalk");
 const ora = require("ora");
 const dayjs = require("dayjs");
 
+const { User, OtpSession } = require("./models");
 const config = require("./config");
 const syncProducts = require("./services/syncProductsFromDigiflazz");
 const userLastMessageMap = new Map();
@@ -37,22 +38,23 @@ bot.start(async (ctx) => {
   const name = ctx.from?.username || ctx.from?.first_name;
   if (user && user.isAdmin) {
     console.log(`${logTime()} Pemilik bot, ID Telegram: ${telegramId}`);
-    msgService.sendPhotolocalWithButtons(ctx, config.BG_BANNER, config.MENUTEXT, mainButtons);
+    msgService.sendPhotolocalWithButtons(
+      ctx,
+      config.BG_BANNER,
+      config.MENUTEXT,
+      mainButtons
+    );
     // msgService.sendButtons(ctx, config.MENUTEXT, mainButtons); // Pesan selamat datang khusus untuk pemilik bot
   } else if (!user) {
     console.log(`${logTime()} Pengguna baru, ID Telegram: ${telegramId}`);
-    msgService.sendButtons(
-      ctx,
-      "Selamat datang! Kamu belum terdaftar, harap lakukan registrasi...",
-      [
-        {
-          text: "HUBUNGI",
-          url: `tg://user?id=${config.OWNER_TELEGRAM}`, // Ganti dengan ID Telegram pemilik
-        },
-      ]
-    );
-
+    await addUserByInput(telegramId, name);
     // Kamu bisa melanjutkan proses registrasi di sini
+    msgService.sendPhotolocalWithButtons(
+      ctx,
+      config.BG_BANNER,
+      config.MENUTEXT,
+      mainButtons
+    );
   } else {
     console.log(
       `${logTime()} Pengguna terdaftar: ${ctx.from.username} (${telegramId})`
@@ -69,7 +71,17 @@ bot.on(message("text"), (ctx) => handleCommand(ctx, msgService, userState));
 
 // Jalankan bot
 bot.launch();
+async function addUserByInput(input, nama) {
+  // Tambahkan user baru
+  const newUser = await User.create({
+    telegram_id: input,
+    balance: 0, // default balance
+    isAdmin: false, // default bukan admin
+    name: nama,
+  });
 
+  return { success: true, user: newUser };
+}
 // Graceful shutdown
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));

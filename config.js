@@ -6,7 +6,7 @@ const chalk = require("chalk");
 module.exports = {
   TOKEN_BOT: "7951443355:AAGDXeCIqOrkZKRYLoG6pCqvpv_OLlUOAp0", // Ganti dengan token bot Telegram
   OWNER_TELEGRAM: "6039327209", // Ganti dengan ID Telegram pemilik bot
-  ADMIN_TELEGRAM: "@Oryxnb", // Ganti dengan ID Telegram pemilik bot
+  ADMIN_TELEGRAM: "Oryxnb", // Ganti dengan ID Telegram pemilik bot
   BG_BANNER: "./assets/bg.jpg",
   // GANTI ini sesuai akun Digiflazz kamu
   USERNAME_DIGI: "mikahog91xlg", //Ganti username DIGI

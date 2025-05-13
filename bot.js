@@ -60,7 +60,12 @@ bot.start(async (ctx) => {
     console.log(
       `${logTime()} Pengguna terdaftar: ${ctx.from.username} (${telegramId})`
     );
-    msgService.sendButtons(ctx, config.MENUTEXT, mainButtons); // Pesan selamat datang yang kamu atur
+    msgService.sendPhotolocalWithButtons(
+      ctx,
+      config.BG_BANNER,
+      config.MENUTEXT,
+      mainButtons
+    ); // Pesan selamat datang yang kamu atur
   }
 });
 

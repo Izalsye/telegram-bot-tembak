@@ -136,6 +136,7 @@ async function handleCallback(ctx, msgService, userState) {
       }
     }
   } else if (data.startsWith("brand_")) {
+    await ctx.answerCbQuery("Loading..."); // Menyelesaikan callback query
     const brandKey = data.replace("brand_", "").toLowerCase();
     const state = userState.get(userId);
     if (!state || !state.data) return;
@@ -204,6 +205,7 @@ async function handleCallback(ctx, msgService, userState) {
       buttons
     );
   } else if (data === "next_page" || data === "prev_page") {
+    await ctx.answerCbQuery();
     const navState = userState.get(userId);
     if (!navState || navState.step !== "lihat_produk") return;
 
@@ -234,6 +236,7 @@ async function handleCallback(ctx, msgService, userState) {
       newButtons
     );
   } else if (data.startsWith("choose_")) {
+    await ctx.answerCbQuery();
     const chooseState = userState.get(userId);
     if (!chooseState || chooseState.step !== "lihat_produk") return;
 
@@ -269,6 +272,7 @@ async function handleCallback(ctx, msgService, userState) {
       msgService.sendText(ctx, "Produk tidak ditemukan.");
     }
   } else if (data === "bayar_now") {
+    await ctx.answerCbQuery();
     const bayarState = userState.get(userId);
     if (!bayarState || bayarState.step !== "konfirmasi_pembayaran") return;
 
@@ -283,6 +287,7 @@ async function handleCallback(ctx, msgService, userState) {
       [{ text: "Balik lah!", callback_data: "menu" }]
     );
   } else if (data.startsWith("pay_")) {
+    await ctx.answerCbQuery();
     // Memecah data untuk mendapatkan metode, nomor, dan kode produk
     const [action, method, nomor, code] = data.split("_");
     const userData = userState.get(userId); // Ambil data pengguna dari userState
@@ -330,6 +335,7 @@ async function handleCallback(ctx, msgService, userState) {
       );
     }
   } else if (data === "topup") {
+    await ctx.answerCbQuery();
     const topupState = userState.get(userId);
     // Kamu bisa cek state sebelumnya jika mau, atau langsung set state topup
     userState.set(userId, { step: "input_nominal_topup" });
@@ -341,6 +347,7 @@ async function handleCallback(ctx, msgService, userState) {
       "Markdown"
     );
   } else if (data.startsWith("cekBayar:")) {
+    await ctx.answerCbQuery();
     const reference = data.split(":")[1];
 
     try {
@@ -413,6 +420,7 @@ async function handleCallback(ctx, msgService, userState) {
       );
     }
   } else if (data === "owner_add_user") {
+    await ctx.answerCbQuery();
     const user = await checkIfUserExists(userId);
 
     if (!user || !user.isAdmin) {
@@ -434,6 +442,7 @@ async function handleCallback(ctx, msgService, userState) {
       [{ text: "BALIK AH!", callback_data: "menu" }]
     );
   } else if (data === "user_info") {
+    await ctx.answerCbQuery();
     const telegram_id = userId;
 
     try {
@@ -506,6 +515,7 @@ ${nomorLogin}
       );
     }
   } else if (data === "add_saldo") {
+    await ctx.answerCbQuery();
     const userrole = await checkIfUserExists(userId);
 
     if (!userrole || !userrole.isAdmin) {
@@ -544,6 +554,7 @@ ${nomorLogin}
       { text: "⬅️ Balik", callback_data: "menu" },
     ]);
   } else if (data === "cek_stock") {
+    await ctx.answerCbQuery();
     const result = await checkStock();
     console.log("datanya", result);
     if (result.status === true) {
@@ -566,6 +577,7 @@ ${nomorLogin}
       );
     }
   } else if (data === "set") {
+    await ctx.answerCbQuery();
     userState.set(userId, { step: "input_range" });
 
     msgService.sendButtons(
@@ -575,6 +587,7 @@ ${nomorLogin}
       "Markdown"
     );
   } else if (data === "setdua") {
+    await ctx.answerCbQuery();
     userState.set(userId, { step: "input_ranged" });
 
     msgService.sendButtons(
